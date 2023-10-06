@@ -4,7 +4,6 @@
 #include <cstring>
 #include "bmplib.cpp"
 
-
 // Black&White _________________________________________
 void turnBW(unsigned char imageMatrix[SIZE][SIZE])
 {
@@ -45,8 +44,8 @@ void verticalFlip(unsigned char imageMatrix[SIZE][SIZE])
 	}
 }
 
-void flipFilter(unsigned char imageMatrix[SIZE][SIZE]) {
-
+void flipFilter(unsigned char imageMatrix[SIZE][SIZE])
+{
 }
 
 // Inverter _____________________________________________
@@ -60,7 +59,6 @@ void invertFilter(unsigned char imageMatrix[SIZE][SIZE])
 		}
 	}
 }
-
 
 // Merge Images _____________________________________________
 void mergeImages(unsigned char imageMatrix[SIZE][SIZE])
@@ -77,12 +75,13 @@ void mergeImages(unsigned char imageMatrix[SIZE][SIZE])
 	readGSBMP(otherImageName, otherMatrix);
 
 	// Merging
-	for (int i = 0; i < SIZE; ++i) {
-		for (int j = 0; j < SIZE; ++j) {
+	for (int i = 0; i < SIZE; ++i)
+	{
+		for (int j = 0; j < SIZE; ++j)
+		{
 			imageMatrix[i][j] = (otherMatrix[i][j] + imageMatrix[i][j]) / 2;
 		}
 	}
-
 }
 
 // Rotate _____________________________________________
@@ -102,7 +101,8 @@ void rotateRight(unsigned char imageMatrix[SIZE][SIZE])
 			imageMatrix[i][j] = tempImage[i][j];
 }
 
-void rotateImage(unsigned char imageMatrix[SIZE][SIZE]) {
+void rotateImage(unsigned char imageMatrix[SIZE][SIZE])
+{
 	int degree;
 	std::cout << "  Rotate 90, 180, 270, or 360? ";
 	std::cin >> degree;
@@ -110,11 +110,13 @@ void rotateImage(unsigned char imageMatrix[SIZE][SIZE]) {
 	// Diving by 90 to get exact number of right rotations
 	degree /= 90;
 
-	while (degree--) rotateRight(imageMatrix);
+	while (degree--)
+		rotateRight(imageMatrix);
 }
 
 // Brightness filter _____________________________________
-void brightnessFilter(unsigned char imageMatrix[SIZE][SIZE]) {
+void brightnessFilter(unsigned char imageMatrix[SIZE][SIZE])
+{
 	char option;
 	std::cout << "  (D)arken or (L)ighten Image? ";
 	std::cin >> option;
@@ -123,8 +125,10 @@ void brightnessFilter(unsigned char imageMatrix[SIZE][SIZE]) {
 	int degree = (option == 'D' ? -50 : 50);
 
 	// Add degree of brightness to each pixel
-	for (int i = 0; i < SIZE; ++i) {
-		for (int j = 0; j < SIZE; ++j) {
+	for (int i = 0; i < SIZE; ++i)
+	{
+		for (int j = 0; j < SIZE; ++j)
+		{
 			imageMatrix[i][j] = std::max(0, std::min(255, imageMatrix[i][j] + degree));
 		}
 	}

@@ -7,9 +7,7 @@
 // TA:						XX
 // Purpose:					Learning Problem solving and how to manage projects
 
-
-#include "filters.cpp"	// has everything
-
+#include "filters.cpp" // has everything
 
 unsigned char mainImageMatrix[SIZE][SIZE];
 
@@ -17,58 +15,65 @@ void loadImage();
 void saveImage();
 char optionsDisplay();
 
-
-
-int main() {
+int main()
+{
 	std::cout << "User Beeh Aamel Eeh ^_^\n\n";
 	loadImage();
 
 	char option;
-	do {
+	do
+	{
 		option = optionsDisplay();
-		switch (option) {
-			case '1': {
-				turnBW(mainImageMatrix);
-				break;
-			}
-			case '2': {
-				invertFilter(mainImageMatrix);
-				break;
-			}
-			case '3': {
-				mergeImages(mainImageMatrix);
-				break;
-			}
-			case '4': {
-				flipFilter(mainImageMatrix);
-				break;
-			}
-			case '5': {
-				brightnessFilter(mainImageMatrix);
-				break;
-			}
-			case '6': {
-				rotateImage(mainImageMatrix);
-				break;
-			}
-			case 's': {
-				saveImage();
-				break;
-			}
-			case '0': {
-				std::cout << "Byee :)" << std::endl;
-			}
+		switch (option)
+		{
+		case '1':
+		{
+			turnBW(mainImageMatrix);
+			break;
+		}
+		case '2':
+		{
+			invertFilter(mainImageMatrix);
+			break;
+		}
+		case '3':
+		{
+			mergeImages(mainImageMatrix);
+			break;
+		}
+		case '4':
+		{
+			flipFilter(mainImageMatrix);
+			break;
+		}
+		case '5':
+		{
+			brightnessFilter(mainImageMatrix);
+			break;
+		}
+		case '6':
+		{
+			rotateImage(mainImageMatrix);
+			break;
+		}
+		case 's':
+		{
+			saveImage();
+			break;
+		}
+		case '0':
+		{
+			std::cout << "Byee :)" << std::endl;
+		}
 		}
 	} while (option - '0');
 
 	return 0;
 }
 
-
-
-
 // ------------------- Functions Declaration ------------------------
-void saveImage() {
+void saveImage()
+{
 	char targetName[100];
 
 	std::cout << "  Please enter target name: ";
@@ -79,7 +84,8 @@ void saveImage() {
 	writeGSBMP(targetName, mainImageMatrix);
 }
 
-void loadImage() {
+void loadImage()
+{
 	char imageName[100];
 
 	std::cout << "Please enter image name: ";
@@ -90,7 +96,8 @@ void loadImage() {
 	readGSBMP(imageName, mainImageMatrix);
 }
 
-char optionsDisplay() {
+char optionsDisplay()
+{
 	std::cout << "Select your filter number [0 to exit]: " << std::endl;
 	std::cout << "  1) Black & White Filter" << std::endl;
 	std::cout << "  2) Invert Filter" << std::endl;
@@ -98,15 +105,15 @@ char optionsDisplay() {
 	std::cout << "  4) Flip Filter" << std::endl;
 	std::cout << "  5) Darken & Enlighten Filter" << std::endl;
 	std::cout << "  6) Rotate Image" << std::endl;
-	//std::cout << "  7) Detect Image Edges" << std::endl;
-	//std::cout << "  8) Enlarge Image" << std::endl;
-	//std::cout << "  9) Shrink Image" << std::endl;
-	//std::cout << "  a) Mirror 1/2 Image" << std::endl;
-	//std::cout << "  b) Shuffle Image" << std::endl;
-	//std::cout << "  c) Blur Image" << std::endl;
-	//std::cout << "  d) Crop Image" << std::endl;
-	//std::cout << "  e) Skew Image Right" << std::endl;
-	//std::cout << "  f) Skew Image Up" << std::endl;
+	// std::cout << "  7) Detect Image Edges" << std::endl;
+	// std::cout << "  8) Enlarge Image" << std::endl;
+	// std::cout << "  9) Shrink Image" << std::endl;
+	// std::cout << "  a) Mirror 1/2 Image" << std::endl;
+	// std::cout << "  b) Shuffle Image" << std::endl;
+	// std::cout << "  c) Blur Image" << std::endl;
+	// std::cout << "  d) Crop Image" << std::endl;
+	// std::cout << "  e) Skew Image Right" << std::endl;
+	// std::cout << "  f) Skew Image Up" << std::endl;
 	std::cout << "  s) Save Image to file" << std::endl;
 	std::cout << "  0) Exit" << std::endl;
 	std::cout << "Your entry: ";
