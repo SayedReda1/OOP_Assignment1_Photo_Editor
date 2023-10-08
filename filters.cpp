@@ -133,3 +133,37 @@ void brightnessFilter(unsigned char imageMatrix[SIZE][SIZE])
 		}
 	}
 }
+
+// Edges detection _______________________________________
+void detectImageEdges(unsigned char imageMatrix[SIZE][SIZE])
+{
+	turnBW(imageMatrix);
+	unsigned char helper[SIZE][SIZE];
+	for (int i = 0; i < SIZE; ++i)
+	{
+		for (int j = 0; j < SIZE - 1; ++j)
+		{
+			if (imageMatrix[j][i] && imageMatrix[j + 1][i])
+				helper[j][i] = 255;
+			else if (!imageMatrix[j][i] && !imageMatrix[j][i])
+				helper[j + 1][i] = 255;
+			else if (imageMatrix[j][i])
+				helper[j][i] = 255, helper[j + 1][i] = 0;
+			else
+				helper[j][i] = 0, helper[j + 1][i] = 255;
+		}
+	}
+
+	for (int i = 0; i < SIZE; ++i)
+		for (int j = 0; j < SIZE - 1; ++j)
+		{
+			if (imageMatrix[i][j] && !imageMatrix[i][j + 1])
+				helper[i][j + 1] = 0;
+			else if (!imageMatrix[i][j] && imageMatrix[i][j + 1])
+				helper[i][j] = 0;
+		}
+
+	for (int i = 0; i < SIZE; ++i)
+		for (int j = 0; j < SIZE; ++j)
+			imageMatrix[i][j] = helper[i][j];
+}

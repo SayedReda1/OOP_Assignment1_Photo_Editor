@@ -56,6 +56,11 @@ int main()
 			rotateImage(mainImageMatrix);
 			break;
 		}
+		case '7':
+		{
+			detectImageEdges(mainImageMatrix);
+			break;
+		}
 		case 's':
 		{
 			saveImage();
@@ -105,7 +110,7 @@ char optionsDisplay()
 	std::cout << "  4) Flip Filter" << std::endl;
 	std::cout << "  5) Darken & Enlighten Filter" << std::endl;
 	std::cout << "  6) Rotate Image" << std::endl;
-	// std::cout << "  7) Detect Image Edges" << std::endl;
+	std::cout << "  7) Detect Image Edges" << std::endl;
 	// std::cout << "  8) Enlarge Image" << std::endl;
 	// std::cout << "  9) Shrink Image" << std::endl;
 	// std::cout << "  a) Mirror 1/2 Image" << std::endl;
