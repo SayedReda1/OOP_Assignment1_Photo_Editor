@@ -61,6 +61,16 @@ int main()
 			detectImageEdges(mainImageMatrix);
 			break;
 		}
+		case '8':
+		{
+			enlargeQ(mainImageMatrix);
+			break;
+		}
+		case 'c':
+		{
+			blur(mainImageMatrix);
+			break;
+		}
 		case 's':
 		{
 			saveImage();
@@ -111,11 +121,11 @@ char optionsDisplay()
 	std::cout << "  5) Darken & Enlighten Filter" << std::endl;
 	std::cout << "  6) Rotate Image" << std::endl;
 	std::cout << "  7) Detect Image Edges" << std::endl;
-	// std::cout << "  8) Enlarge Image" << std::endl;
+	std::cout << "  8) Enlarge Image" << std::endl;
 	// std::cout << "  9) Shrink Image" << std::endl;
 	// std::cout << "  a) Mirror 1/2 Image" << std::endl;
 	// std::cout << "  b) Shuffle Image" << std::endl;
-	// std::cout << "  c) Blur Image" << std::endl;
+	std::cout << "  c) Blur Image" << std::endl;
 	// std::cout << "  d) Crop Image" << std::endl;
 	// std::cout << "  e) Skew Image Right" << std::endl;
 	// std::cout << "  f) Skew Image Up" << std::endl;

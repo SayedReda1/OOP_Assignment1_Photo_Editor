@@ -167,3 +167,44 @@ void detectImageEdges(unsigned char imageMatrix[SIZE][SIZE])
 		for (int j = 0; j < SIZE; ++j)
 			imageMatrix[i][j] = helper[i][j];
 }
+
+// Enlarge a quarter _____________________________________
+void enlargeQ(unsigned char imageMatrix[SIZE][SIZE])
+{
+	int option;
+	cout << "Which quarter to enlarge 1, 2, 3 or 4? ";
+	cin >> option;
+
+	unsigned char helper[SIZE][SIZE];
+	int n = SIZE;
+	auto x = (option / 3) * (n / 2),
+		 y = ((option % 2) ^ 1) * (n / 2);
+
+	for (int i = x; i < x + n / 2; ++i)
+		for (int j = y; j < y + n / 2; ++j)
+		{
+			helper[(i - x) * 2][(j - y) * 2] = imageMatrix[i][j];
+			if (i < n - 1)
+				helper[(i - x) * 2 + 1][(j - y) * 2] = imageMatrix[i][j];
+			if (j < n - 1)
+				helper[(i - x) * 2][(j - y) * 2 + 1] = imageMatrix[i][j];
+			if (i < n - 1 && j < n - 1)
+				helper[(i - x) * 2 + 1][(j - y) * 2 + 1] = imageMatrix[i][j];
+		}
+
+	for (int i = 0; i < n; ++i)
+		for (int j = 0; j < n; ++j)
+			imageMatrix[i][j] = helper[i][j];
+}
+
+void blur(unsigned char imageMatrix[SIZE][SIZE])
+{
+	unsigned char helper[SIZE][SIZE];
+	// UL, U, UR, L, R, DL, D, DR
+	// pair<int, int> dir[] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+	for (int i = 0; i < SIZE; ++i)
+		for (int j = 0; j < SIZE; ++j)
+		{
+			imageMatrix[i][j] = (imageMatrix[i][j] + 127) / 2;
+		}
+}
