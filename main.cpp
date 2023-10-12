@@ -1,7 +1,7 @@
 
 // FCAI - OOP Programming - 2023 - Assignment 1
 // Program Name:			Grayscale Photo Editor
-// Last Modified Date:		4/10/2023
+// Last Modified Date:		12/10/2023
 // Author1:					Elsayed Reda		(20220066)
 // Author2:					Hesham Abdelnaser	(20220373)
 // TA:						XX
@@ -71,10 +71,12 @@ int main() {
 				shuffleImage(mainImageMatrix);
 				break;
 			}
-			// case 'c': {
-			// 	blur(mainImageMatrix);
-			// 	break;
-			// }
+			case 'c': {
+				// loop many times to increase blurness
+				for (int i = 0; i < 5; ++i)
+					blur(mainImageMatrix);
+				break;
+			}
 			case 'd': {
 				cropImage(mainImageMatrix);
 				break;
@@ -131,7 +133,7 @@ char optionsDisplay() {
 	std::cout << "  9) Shrink Image" << std::endl;
 	std::cout << "  a) Mirror Half Image" << std::endl;
 	std::cout << "  b) Shuffle Image" << std::endl;
-	//std::cout << "  c) Blur Image" << std::endl;
+	std::cout << "  c) Blur Image" << std::endl;
 	std::cout << "  d) Crop Image" << std::endl;
 	//std::cout << "  e) Skew Image Right" << std::endl;
 	//std::cout << "  f) Skew Image Up" << std::endl;

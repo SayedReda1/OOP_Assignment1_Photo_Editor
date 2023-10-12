@@ -1,4 +1,3 @@
-
 // Editor Function Declaration
 #include <iostream>
 #include <cstring>
@@ -221,8 +220,8 @@ void fill(unsigned char matrix[SIZE][SIZE], int x, int y, unsigned char val) {
 void enlargeQ(unsigned char imageMatrix[n][n])
 {
 	int option;
-	cout << "> Which quarter to enlarge 1, 2, 3 or 4? ";
-	cin >> option;
+	std::cout << "> Which quarter to enlarge 1, 2, 3 or 4? ";
+	std::cin >> option;
 
 	unsigned char helper[n][n];
 
@@ -369,17 +368,49 @@ void shuffleImage(unsigned char imageMatrix[n][n])
 	assign(imageMatrix, helper);
 }
 
-// ~ Blur Image __________________________________________
+// Blur Image __________________________________________
+int avr(unsigned char imageMatrix[n][n], double weight[3][3], int i, int j) {
+	// computes each element from all sides multiplied
+	// by its corresponding weight in weight matrix
+
+	// Direction matrix to denote all sides (neighbor pixels)
+	int dir[][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+
+	double finalValue = 0.0;	// used double in order to not lose any numbers
+	for (int x = 0; x < 9; ++x)
+	{
+		int nx = dir[x][0] + i, ny = dir[x][1] + j;		// a valid possible side
+		if (0 <= nx && nx < n && 0 <= ny && ny < n)
+		{
+			// weight i = x / 3 | weight j = x % 3
+			finalValue += imageMatrix[nx][ny] * weight[x / 3][x % 3];
+		}
+	}
+	return finalValue;
+}
 void blur(unsigned char imageMatrix[n][n])
 {
-	unsigned char helper[n][n];
-	// UL, U, UR, L, R, DL, D, DR
-	// pair<int, int> dir[] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+	// Our result matrix and weight
+	unsigned char result[n][n];
+
+	// Notice that center elements are weighter than other
+	// That's to make main color appear a little
+	double weight[3][3] = {
+		{0.0625, 0.125, 0.0625},
+		{0.125, 0.256, 0.125},
+		{0.0625, 0.125, 0.0625}
+	};
+
+
 	for (int i = 0; i < n; ++i)
+	{
 		for (int j = 0; j < n; ++j)
 		{
-			imageMatrix[i][j] = (imageMatrix[i][j] + 127) / 2;
+			result[i][j] = avr(imageMatrix, weight, i, j);
 		}
+	}
+
+	assign(imageMatrix, result);
 }
 
 // Crop Image _____________________________________________
