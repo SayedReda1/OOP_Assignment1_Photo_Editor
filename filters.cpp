@@ -32,7 +32,7 @@ void turnBW(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Flilp _____________________________________________
+// Flip _____________________________________________
 void horizontalFlip(unsigned char imageMatrix[n][n])
 {
 	for (int i = 0; i < n; ++i)
@@ -59,6 +59,29 @@ void verticalFlip(unsigned char imageMatrix[n][n])
 
 void flipFilter(unsigned char imageMatrix[n][n])
 {
+	// Take input
+	char option;
+	std::cout << "> (H)orizontally or (V)ertically? ";
+	std::cin >> option;
+	option = ::toupper(option);		// in case the user enters lowercase letters
+
+	switch (option)
+	{
+		case 'H':
+		{
+			horizontalFlip(imageMatrix);
+			break;
+		}
+		case 'V':
+		{
+			verticalFlip(imageMatrix);
+			break;
+		}
+		default:
+		{
+			std::cout << "! Invalid Input" << std::endl;
+		}
+	}
 }
 
 // Inverter _____________________________________________
@@ -68,6 +91,7 @@ void invertFilter(unsigned char imageMatrix[n][n])
 	{
 		for (int j = 0; j < n; j++)
 		{
+			// Takes the complement of the color number
 			imageMatrix[i][j] = 255 - imageMatrix[i][j];
 		}
 	}
@@ -100,15 +124,19 @@ void mergeImages(unsigned char imageMatrix[n][n])
 // Rotate _____________________________________________
 void rotateRight(unsigned char imageMatrix[n][n])
 {
-	unsigned char tempImage[n][n];
+	unsigned char helper[n][n];
 
 	// for each row in main image
-	for (int i = 0, tempCol = n; i < n; ++i, --tempCol)
+	for (int i = 0; i < n; ++i)
+	{
 		// copy each row in image to be last column in newImage
 		for (int j = 0; j < n; ++j)
-			tempImage[j][tempCol] = imageMatrix[i][j];
+		{
+			helper[j][n - i - 1] = imageMatrix[i][j];
+		}
+	}
 
-	assign(imageMatrix, tempImage);
+	assign(imageMatrix, helper);
 }
 
 void rotateImage(unsigned char imageMatrix[n][n])
@@ -341,7 +369,7 @@ void shuffleImage(unsigned char imageMatrix[n][n])
 	assign(imageMatrix, helper);
 }
 
-// Blur Image __________________________________________
+// ~ Blur Image __________________________________________
 void blur(unsigned char imageMatrix[n][n])
 {
 	unsigned char helper[n][n];
@@ -352,4 +380,26 @@ void blur(unsigned char imageMatrix[n][n])
 		{
 			imageMatrix[i][j] = (imageMatrix[i][j] + 127) / 2;
 		}
+}
+
+// Crop Image _____________________________________________
+void cropImage(unsigned char imageMatrix[n][n])
+{
+	int x, y, w, h;
+	std::cout << "> Enter x, y, width, and height: ";
+	std::cin >> x >> y >> w >> h;
+
+	// croped image limits:
+	// x <= i <= x + h
+	// y <= j <= y + w
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			// Turn any pixel out the limits into white
+			if ((x <= i && i <= x + h) && (y <= j && j <= y + w))
+				continue;
+			imageMatrix[i][j] = 255;
+		}
+	}
 }

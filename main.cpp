@@ -71,6 +71,14 @@ int main() {
 				shuffleImage(mainImageMatrix);
 				break;
 			}
+			// case 'c': {
+			// 	blur(mainImageMatrix);
+			// 	break;
+			// }
+			case 'd': {
+				cropImage(mainImageMatrix);
+				break;
+			}
 			case 's': {
 				saveImage();
 				break;
@@ -124,7 +132,7 @@ char optionsDisplay() {
 	std::cout << "  a) Mirror Half Image" << std::endl;
 	std::cout << "  b) Shuffle Image" << std::endl;
 	//std::cout << "  c) Blur Image" << std::endl;
-	//std::cout << "  d) Crop Image" << std::endl;
+	std::cout << "  d) Crop Image" << std::endl;
 	//std::cout << "  e) Skew Image Right" << std::endl;
 	//std::cout << "  f) Skew Image Up" << std::endl;
 	std::cout << "  s) Save Image to file" << std::endl;
