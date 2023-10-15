@@ -452,30 +452,65 @@ void skewHorizontal(unsigned char imageMatrix[n][n])
 	cin >> degree;
 
 	// Calculate the number of shifted pixels
-	int shiftPixels = n * ceil(tan((float)degree * PI / 180.0));
+	int shiftPixels = n * tan((float)degree * PI / 180.0);
 
 	// shift each row to a helper matrix
 	unsigned char helper[n][n + shiftPixels];
 	for (int i = 0; i < n; ++i)
 		fill(helper[i], helper[i] + n + shiftPixels, 255);
 
-	int shift = shiftPixels, x = shiftPixels / n;
+	double shift = shiftPixels, x = (double)shiftPixels / n;
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < n; ++j)
-			helper[i][j + shift] = imageMatrix[i][j];
+			helper[i][j + (int)shift] = imageMatrix[i][j];
 
 		shift -= x;
 	}
 
-	// copy back to original matrix
+	// copy to original matrix
 	for (int i = 0; i < n; ++i)
 		fill(imageMatrix[i], imageMatrix[i] + n, 255); // fill with white
 
-	int step = (n + shiftPixels) / n;
+	double step = ((double)n + shiftPixels) / n;
 	for (int i = 0; i < n; ++i)
-		for (int j = 0; j < n + shiftPixels; j += step)
-			imageMatrix[i][j / step] = helper[i][j];
+	{
+		for (double j = 0; j < n + shiftPixels; j += step)
+		{
+			imageMatrix[i][(int)(j / step)] = helper[i][(int)j];
+		}
+	}
+}
 
-	return;
+void skewVertical(unsigned char imageMatrix[n][n])
+{
+	int degree;
+	cout << "Please Enter the degree of skewing: ";
+	cin >> degree;
+
+	// Calculate the number of shifted pixels
+	int shiftPixels = n * tan((float)degree * PI / 180.0);
+
+	// shift each column to a helper matrix
+	unsigned char helper[n + shiftPixels][n];
+	for (int i = 0; i < n + shiftPixels; ++i)
+		fill(helper[i], helper[i] + n, 255);
+
+	double shift = shiftPixels, x = (double)shiftPixels / n;
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+			helper[j + (int)shift][i] = imageMatrix[j][i];
+
+		shift -= x;
+	}
+
+	// copy to original matrix
+	for (int i = 0; i < n; ++i)
+		fill(imageMatrix[i], imageMatrix[i] + n, 255); // fill with white
+
+	double step = ((double)n + shiftPixels) / n;
+	for (int i = 0; i < n + shiftPixels; i += step)
+		for (int j = 0; j < n; ++j)
+			imageMatrix[(int)(i / step)][j] = helper[i][j];
 }
