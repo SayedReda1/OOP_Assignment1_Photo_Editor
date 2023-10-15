@@ -1,12 +1,15 @@
 // Editor Function Declaration
 #include <iostream>
 #include <cstring>
+#include <cmath>
 #include "bmplib.cpp"
 
 #define n SIZE
+#define PI 3.14159265
 
-// a funtion to assign given mat2 to given mat1
-void assign(unsigned char mat1[n][n], unsigned char mat2[n][n]) {
+// A funtion to assign given mat2 to given mat1
+void assign(unsigned char mat1[n][n], unsigned char mat2[n][n])
+{
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < n; ++j)
@@ -62,24 +65,24 @@ void flipFilter(unsigned char imageMatrix[n][n])
 	char option;
 	std::cout << "> (H)orizontally or (V)ertically? ";
 	std::cin >> option;
-	option = ::toupper(option);		// in case the user enters lowercase letters
+	option = ::toupper(option); // in case the user enters lowercase letters
 
 	switch (option)
 	{
-		case 'H':
-		{
-			horizontalFlip(imageMatrix);
-			break;
-		}
-		case 'V':
-		{
-			verticalFlip(imageMatrix);
-			break;
-		}
-		default:
-		{
-			std::cout << "! Invalid Input" << std::endl;
-		}
+	case 'H':
+	{
+		horizontalFlip(imageMatrix);
+		break;
+	}
+	case 'V':
+	{
+		verticalFlip(imageMatrix);
+		break;
+	}
+	default:
+	{
+		std::cout << "! Invalid Input" << std::endl;
+	}
 	}
 }
 
@@ -206,17 +209,21 @@ void detectImageEdges(unsigned char imageMatrix[n][n])
 }
 
 // Enlarge a quarter _____________________________________
-void fill(unsigned char matrix[SIZE][SIZE], int x, int y, unsigned char val) {
+void fill(unsigned char matrix[SIZE][SIZE], int x, int y, unsigned char val)
+{
 	// fill the corresponding 4 pixels in helper matrix
-	x = (x % (n/2)) * 2;
-	y = (y % (n/2)) * 2;
+	x = (x % (n / 2)) * 2;
+	y = (y % (n / 2)) * 2;
 
-	for (int i = 0; i < 2; ++i) {
-		for (int j = 0; j < 2; ++j) {
-			matrix[i+x][j+y] = val;
+	for (int i = 0; i < 2; ++i)
+	{
+		for (int j = 0; j < 2; ++j)
+		{
+			matrix[i + x][j + y] = val;
 		}
 	}
 }
+
 void enlargeQ(unsigned char imageMatrix[n][n])
 {
 	int option;
@@ -296,7 +303,7 @@ void mirrorImage(unsigned char imageMatrix[n][n])
 	bool reverse = (option == 'R' || option == 'D');
 
 	int l, r;
-	if (option == 'L' || option == 'R')		// if Left or Right take mirror each row
+	if (option == 'L' || option == 'R') // if Left or Right take mirror each row
 	{
 		l = 0, r = n - 1;
 		for (int i = 0; i < n; ++i)
@@ -313,7 +320,7 @@ void mirrorImage(unsigned char imageMatrix[n][n])
 	}
 	else
 	{
-		for (int i = 0; i < n; ++i)		// if Up or Down take mirror each column
+		for (int i = 0; i < n; ++i) // if Up or Down take mirror each column
 		{
 			while (l < r)
 			{
@@ -332,17 +339,18 @@ void mirrorImage(unsigned char imageMatrix[n][n])
 std::pair<int, int> convertPoint(int i, int j, int quarter)
 {
 	// Convert the points in range [0, 127] to their correspoding points in all quarters
-	int x = (quarter / 3) * (n/2);
-	int y = ((quarter % 2)^1) * (n/2);
-	return {i+x, j+y};
+	int x = (quarter / 3) * (n / 2);
+	int y = ((quarter % 2) ^ 1) * (n / 2);
+	return {i + x, j + y};
 }
 
-void emplace(unsigned char original[n][n], unsigned char result[n][n], int from, int to) {
+void emplace(unsigned char original[n][n], unsigned char result[n][n], int from, int to)
+{
 	// Copies a quarter (from) in original matrix
 	// to quarter (to) in result matrix
-	for (int i = 0; i < n/2; ++i)
+	for (int i = 0; i < n / 2; ++i)
 	{
-		for (int j = 0; j < n/2; ++j)
+		for (int j = 0; j < n / 2; ++j)
 		{
 			// converting each point to its corresponding one in both original and result mat
 			auto [oX, oY] = convertPoint(i, j, from);
@@ -357,29 +365,31 @@ void shuffleImage(unsigned char imageMatrix[n][n])
 {
 	int order[4];
 	std::cout << "> Enter new order of quarters: ";
-	for (int i = 0; i < 4; ++i) std::cin >> order[i];
+	for (int i = 0; i < 4; ++i)
+		std::cin >> order[i];
 
 	// result matrix
 	unsigned char helper[n][n];
 	for (int i = 0; i < 4; ++i)
 	{
-		emplace(imageMatrix, helper, order[i], i+1);
+		emplace(imageMatrix, helper, order[i], i + 1);
 	}
 	assign(imageMatrix, helper);
 }
 
 // Blur Image __________________________________________
-int avr(unsigned char imageMatrix[n][n], double weight[3][3], int i, int j) {
+int avr(unsigned char imageMatrix[n][n], double weight[3][3], int i, int j)
+{
 	// computes each element from all sides multiplied
 	// by its corresponding weight in weight matrix
 
 	// Direction matrix to denote all sides (neighbor pixels)
 	int dir[][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
 
-	double finalValue = 0.0;	// used double in order to not lose any numbers
+	double finalValue = 0.0; // used double in order to not lose any numbers
 	for (int x = 0; x < 9; ++x)
 	{
-		int nx = dir[x][0] + i, ny = dir[x][1] + j;		// a valid possible side
+		int nx = dir[x][0] + i, ny = dir[x][1] + j; // a valid possible side
 		if (0 <= nx && nx < n && 0 <= ny && ny < n)
 		{
 			// weight i = x / 3 | weight j = x % 3
@@ -388,6 +398,7 @@ int avr(unsigned char imageMatrix[n][n], double weight[3][3], int i, int j) {
 	}
 	return finalValue;
 }
+
 void blur(unsigned char imageMatrix[n][n])
 {
 	// Our result matrix and weight
@@ -398,9 +409,7 @@ void blur(unsigned char imageMatrix[n][n])
 	double weight[3][3] = {
 		{0.0625, 0.125, 0.0625},
 		{0.125, 0.256, 0.125},
-		{0.0625, 0.125, 0.0625}
-	};
-
+		{0.0625, 0.125, 0.0625}};
 
 	for (int i = 0; i < n; ++i)
 	{
@@ -433,4 +442,40 @@ void cropImage(unsigned char imageMatrix[n][n])
 			imageMatrix[i][j] = 255;
 		}
 	}
+}
+
+// Skew Horizontal and Vertical __________________________
+void skewHorizontal(unsigned char imageMatrix[n][n])
+{
+	int degree;
+	cout << "Please Enter the degree of skewing: ";
+	cin >> degree;
+
+	// Calculate the number of shifted pixels
+	int shiftPixels = n * ceil(tan((float)degree * PI / 180.0));
+
+	// shift each row to a helper matrix
+	unsigned char helper[n][n + shiftPixels];
+	for (int i = 0; i < n; ++i)
+		fill(helper[i], helper[i] + n + shiftPixels, 255);
+
+	int shift = shiftPixels, x = shiftPixels / n;
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+			helper[i][j + shift] = imageMatrix[i][j];
+
+		shift -= x;
+	}
+
+	// copy back to original matrix
+	for (int i = 0; i < n; ++i)
+		fill(imageMatrix[i], imageMatrix[i] + n, 255); // fill with white
+
+	int step = (n + shiftPixels) / n;
+	for (int i = 0; i < n; ++i)
+		for (int j = 0; j < n + shiftPixels; j += step)
+			imageMatrix[i][j / step] = helper[i][j];
+
+	return;
 }
