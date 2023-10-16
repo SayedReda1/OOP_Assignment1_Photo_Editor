@@ -7,7 +7,7 @@
 #define n SIZE
 #define PI 3.14159265
 
-// A funtion to assign given mat2 to given mat1
+// --------- Helping functions -----------
 void assign(unsigned char mat1[n][n], unsigned char mat2[n][n])
 {
 	for (int i = 0; i < n; ++i)
@@ -18,6 +18,7 @@ void assign(unsigned char mat1[n][n], unsigned char mat2[n][n])
 		}
 	}
 }
+
 
 // Black&White _________________________________________
 void turnBW(unsigned char imageMatrix[n][n])
@@ -30,6 +31,44 @@ void turnBW(unsigned char imageMatrix[n][n])
 				imageMatrix[i][j] = 255;
 			else
 				imageMatrix[i][j] = 0;
+		}
+	}
+}
+
+
+// Inverter _____________________________________________
+void invertFilter(unsigned char imageMatrix[n][n])
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			// Takes the complement of the color number
+			imageMatrix[i][j] = 255 - imageMatrix[i][j];
+		}
+	}
+}
+
+// Merge Images _____________________________________________
+void mergeImages(unsigned char imageMatrix[n][n])
+{
+	char otherImageName[100];
+	unsigned char otherMatrix[n][n];
+
+	// Take the other image name
+	std::cout << "> Enter image name to merge with: ";
+	std::cin >> otherImageName;
+
+	// add .bmp to it
+	strcat(otherImageName, ".bmp");
+	readGSBMP(otherImageName, otherMatrix);
+
+	// Merging
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			imageMatrix[i][j] = (otherMatrix[i][j] + imageMatrix[i][j]) / 2;
 		}
 	}
 }
@@ -86,39 +125,23 @@ void flipFilter(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Inverter _____________________________________________
-void invertFilter(unsigned char imageMatrix[n][n])
+// Brightness filter _____________________________________
+void brightnessFilter(unsigned char imageMatrix[n][n])
 {
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			// Takes the complement of the color number
-			imageMatrix[i][j] = 255 - imageMatrix[i][j];
-		}
-	}
-}
+	char option;
+	std::cout << "> (D)arken or (L)ighten Image? ";
+	std::cin >> option;
+	option = ::toupper(option);
 
-// Merge Images _____________________________________________
-void mergeImages(unsigned char imageMatrix[n][n])
-{
-	char otherImageName[100];
-	unsigned char otherMatrix[n][n];
+	// Deciding to decrease to half or adding half
+	double degree = (option == 'D' ? 0.5 : 1.5);
 
-	// Take the other image name
-	std::cout << "> Enter image name to merge with: ";
-	std::cin >> otherImageName;
-
-	// add .bmp to it
-	strcat(otherImageName, ".bmp");
-	readGSBMP(otherImageName, otherMatrix);
-
-	// Merging
+	// Add degree of brightness to each pixel
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < n; ++j)
 		{
-			imageMatrix[i][j] = (otherMatrix[i][j] + imageMatrix[i][j]) / 2;
+			imageMatrix[i][j] = std::min(255, int(imageMatrix[i][j] * degree));
 		}
 	}
 }
@@ -156,26 +179,6 @@ void rotateImage(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Brightness filter _____________________________________
-void brightnessFilter(unsigned char imageMatrix[n][n])
-{
-	char option;
-	std::cout << "> (D)arken or (L)ighten Image? ";
-	std::cin >> option;
-
-	// Deciding to decrease to half or adding half
-	double degree = (option == 'D' ? 0.5 : 1.5);
-
-	// Add degree of brightness to each pixel
-	for (int i = 0; i < n; ++i)
-	{
-		for (int j = 0; j < n; ++j)
-		{
-			imageMatrix[i][j] = std::min(255, int(imageMatrix[i][j] * degree));
-		}
-	}
-}
-
 // Edges detection _______________________________________
 void detectImageEdges(unsigned char imageMatrix[n][n])
 {
@@ -186,13 +189,21 @@ void detectImageEdges(unsigned char imageMatrix[n][n])
 		for (int j = 0; j < n - 1; ++j)
 		{
 			if (imageMatrix[j][i] && imageMatrix[j + 1][i])
+			{
 				helper[j][i] = 255;
+			}
 			else if (!imageMatrix[j][i] && !imageMatrix[j][i])
+			{
 				helper[j + 1][i] = 255;
+			}
 			else if (imageMatrix[j][i])
+			{
 				helper[j][i] = 255, helper[j + 1][i] = 0;
-			else
+			}
+			else 
+			{
 				helper[j][i] = 0, helper[j + 1][i] = 255;
+			}
 		}
 	}
 
@@ -200,20 +211,24 @@ void detectImageEdges(unsigned char imageMatrix[n][n])
 		for (int j = 0; j < n - 1; ++j)
 		{
 			if (imageMatrix[i][j] && !imageMatrix[i][j + 1])
+			{
 				helper[i][j + 1] = 0;
+			}
 			else if (!imageMatrix[i][j] && imageMatrix[i][j + 1])
+			{
 				helper[i][j] = 0;
+			}
 		}
 
 	assign(imageMatrix, helper);
 }
 
 // Enlarge a quarter _____________________________________
-void fill(unsigned char matrix[SIZE][SIZE], int x, int y, unsigned char val)
+void fill(unsigned char matrix[n][n], int x, int y, unsigned char val)
 {
-	// fill the corresponding 4 pixels in helper matrix
-	x = (x % (n / 2)) * 2;
-	y = (y % (n / 2)) * 2;
+	// fill the corresponding 2x2 pixels in helper matrix
+	x = (x % (n / 2)) * 2;	// corresponding x in helper
+	y = (y % (n / 2)) * 2;	// corresponding y in helper
 
 	for (int i = 0; i < 2; ++i)
 	{
@@ -236,6 +251,8 @@ void enlargeQ(unsigned char imageMatrix[n][n])
 	auto x = (option / 3) * (n / 2),
 		 y = ((option % 2) ^ 1) * (n / 2);
 
+	// looping over selected quarter and enlarging each pixel 
+	// to a 2x2 pixel in helper using fill
 	for (int i = x; i < x + n / 2; ++i)
 	{
 		for (int j = y; j < y + n / 2; ++j)
@@ -264,20 +281,20 @@ int avr(unsigned char imageMatrix[n][n], std::pair<int, int> start, int width)
 
 void shrinkImage(unsigned char imageMatrix[n][n])
 {
-	char option[10];
+	char option[5];
 	std::cout << "> Shrink to (1/2), (1/3), or (1/4)? ";
 	std::cin >> option;
 	// check for input validation
-	if (strncmp(option, "1/2", 3) && strncmp(option, "1/3", 3) && strncmp(option, "1/4", 3))
+	if (strncmp(option, "1/2", 3) != 0 && strncmp(option, "1/3", 3) != 0 && strncmp(option, "1/4", 3) != 0)
 	{
 		std::cout << "! Invalid Input" << std::endl;
 		return;
 	}
 
 	// Take squares of size w in imageMatrix & get average to put in result
-	int w = option[2] - '0'; // size of square
+	int w = option[2] - '0'; 	// size of square
 	unsigned char result[n][n];
-	memset(result, 255, sizeof result); // initializing with white color
+	memset(result, 255, sizeof(result)); // initializing with white color
 
 	for (int i = 0; i < n - w + 1; i += w)
 	{
@@ -305,16 +322,20 @@ void mirrorImage(unsigned char imageMatrix[n][n])
 	int l, r;
 	if (option == 'L' || option == 'R') // if Left or Right take mirror each row
 	{
-		l = 0, r = n - 1;
 		for (int i = 0; i < n; ++i)
 		{
+			l = 0, r = n - 1;
 			while (l < r)
 			{
 				// assigning
 				if (reverse)
+				{
 					imageMatrix[i][l++] = imageMatrix[i][r--];
+				}
 				else
+				{
 					imageMatrix[i][r--] = imageMatrix[i][l++];
+				}
 			}
 		}
 	}
@@ -322,15 +343,19 @@ void mirrorImage(unsigned char imageMatrix[n][n])
 	{
 		for (int i = 0; i < n; ++i) // if Up or Down take mirror each column
 		{
+			l = 0, r = n - 1;
 			while (l < r)
 			{
 				// assigning
 				if (reverse)
+				{
 					imageMatrix[l++][i] = imageMatrix[r--][i];
+				}
 				else
+				{
 					imageMatrix[r--][i] = imageMatrix[l++][i];
+				}
 			}
-			l = 0, r = n - 1;
 		}
 	}
 }
@@ -434,9 +459,10 @@ void cropImage(unsigned char imageMatrix[n][n])
 		for (int j = 0; j < n; ++j)
 		{
 			// Turn any pixel out the limits into white
-			if ((x <= i && i <= x + h) && (y <= j && j <= y + w))
-				continue;
-			imageMatrix[i][j] = 255;
+			if (i < x || i > x + h || j < y || j > y + w) {
+				imageMatrix[i][j] = 255;
+			}
+
 		}
 	}
 }
