@@ -378,22 +378,22 @@ void shuffleImage(unsigned char imageMatrix[n][n])
 }
 
 // Blur Image __________________________________________
-int avr(unsigned char imageMatrix[n][n], double weight[3][3], int i, int j)
+int avr(unsigned char imageMatrix[n][n], double weight[], int x, int y)
 {
 	// computes each element from all sides multiplied
 	// by its corresponding weight in weight matrix
 
 	// Direction matrix to denote all sides (neighbor pixels)
-	int dir[][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+	int dirx[] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
+	int diry[] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
 
-	double finalValue = 0.0; // used double in order to not lose any numbers
-	for (int x = 0; x < 9; ++x)
+	int finalValue = 0;
+	for (int i = 0; i < 9; ++i)
 	{
-		int nx = dir[x][0] + i, ny = dir[x][1] + j; // a valid possible side
+		int nx = dirx[i] + x, ny = diry[i] + y; // a valid possible side
 		if (0 <= nx && nx < n && 0 <= ny && ny < n)
 		{
-			// weight i = x / 3 | weight j = x % 3
-			finalValue += imageMatrix[nx][ny] * weight[x / 3][x % 3];
+			finalValue += imageMatrix[nx][ny] * weight[i];
 		}
 	}
 	return finalValue;
@@ -406,10 +406,7 @@ void blur(unsigned char imageMatrix[n][n])
 
 	// Notice that center elements are weighter than other
 	// That's to make main color appear a little
-	double weight[3][3] = {
-		{0.0625, 0.125, 0.0625},
-		{0.125, 0.256, 0.125},
-		{0.0625, 0.125, 0.0625}};
+	double weight[9] = {0.0625, 0.125, 0.0625, 0.125, 0.256, 0.125, 0.0625, 0.125, 0.0625};
 
 	for (int i = 0; i < n; ++i)
 	{
@@ -448,36 +445,43 @@ void cropImage(unsigned char imageMatrix[n][n])
 void skewHorizontal(unsigned char imageMatrix[n][n])
 {
 	int degree;
-	cout << "Please Enter the degree of skewing: ";
-	cin >> degree;
+	std::cout << "> Please Enter the degree of skewing: ";
+	std::cin >> degree;
 
-	// Calculate the number of shifted pixels
+	// --- Calculate the number of shifted pixels ---
 	int shiftPixels = n * tan((float)degree * PI / 180.0);
 
-	// shift each row to a helper matrix
+	// --- Shift each row to a helper matrix ---
 	unsigned char helper[n][n + shiftPixels];
 	for (int i = 0; i < n; ++i)
-		fill(helper[i], helper[i] + n + shiftPixels, 255);
+	{
+		fill(helper[i], helper[i] + n + shiftPixels, 255); // fill with white
+	}
 
 	double shift = shiftPixels, x = (double)shiftPixels / n;
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < n; ++j)
+		{
 			helper[i][j + (int)shift] = imageMatrix[i][j];
+		}
 
 		shift -= x;
 	}
 
-	// copy to original matrix
+	// --- Copy to original matrix with compression ---
 	for (int i = 0; i < n; ++i)
+	{
 		fill(imageMatrix[i], imageMatrix[i] + n, 255); // fill with white
+	}
 
 	double step = ((double)n + shiftPixels) / n;
 	for (int i = 0; i < n; ++i)
 	{
-		for (double j = 0; j < n + shiftPixels; j += step)
+		double k = 0.0;
+		for (int j = 0; j < n; ++j, k += step)
 		{
-			imageMatrix[i][(int)(j / step)] = helper[i][(int)j];
+			imageMatrix[i][j] = helper[i][(int)k];
 		}
 	}
 }
@@ -485,32 +489,45 @@ void skewHorizontal(unsigned char imageMatrix[n][n])
 void skewVertical(unsigned char imageMatrix[n][n])
 {
 	int degree;
-	cout << "Please Enter the degree of skewing: ";
-	cin >> degree;
+	std::cout << "> Please Enter the degree of skewing: ";
+	std::cin >> degree;
 
-	// Calculate the number of shifted pixels
+	// --- Calculate the number of shifted pixels --- 
 	int shiftPixels = n * tan((float)degree * PI / 180.0);
 
-	// shift each column to a helper matrix
+	// --- Shift each column to a helper matrix ---
 	unsigned char helper[n + shiftPixels][n];
 	for (int i = 0; i < n + shiftPixels; ++i)
+	{
 		fill(helper[i], helper[i] + n, 255);
+	}
 
 	double shift = shiftPixels, x = (double)shiftPixels / n;
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < n; ++j)
+		{
 			helper[j + (int)shift][i] = imageMatrix[j][i];
+		}
 
 		shift -= x;
 	}
 
-	// copy to original matrix
+	// --- Copy to original matrix with compressions ---
 	for (int i = 0; i < n; ++i)
+	{
 		fill(imageMatrix[i], imageMatrix[i] + n, 255); // fill with white
+	}
 
 	double step = ((double)n + shiftPixels) / n;
-	for (int i = 0; i < n + shiftPixels; i += step)
+	// k -> helper matrix row pointer
+	// i -> imageMatrix row pointer
+	double k = 0.0;
+	for (int i = 0; i < n; ++i, k += step)
+	{
 		for (int j = 0; j < n; ++j)
-			imageMatrix[(int)(i / step)][j] = helper[i][j];
+		{
+			imageMatrix[i][j] = helper[(int)k][j];
+		}
+	}
 }

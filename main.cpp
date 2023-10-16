@@ -1,7 +1,7 @@
 
 // FCAI - OOP Programming - 2023 - Assignment 1
 // Program Name:			Grayscale Photo Editor
-// Last Modified Date:		12/10/2023
+// Last Modified Date:		16/10/2023
 // Author1:					Elsayed Reda		(20220066)
 // Author2:					Hesham Abdelnaser	(20220373)
 // TA:						XX
