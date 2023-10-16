@@ -492,7 +492,7 @@ void skewVertical(unsigned char imageMatrix[n][n])
 	std::cout << "> Please Enter the degree of skewing: ";
 	std::cin >> degree;
 
-	// --- Calculate the number of shifted pixels --- 
+	// --- Calculate the number of shifted pixels ---
 	int shiftPixels = n * tan((float)degree * PI / 180.0);
 
 	// --- Shift each column to a helper matrix ---
