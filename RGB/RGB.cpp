@@ -9,7 +9,7 @@
 
 #include "filters.cpp" // has everything
 
-unsigned char mainImageMatrix[SIZE][SIZE];
+unsigned char mainImageMatrix[SIZE][SIZE][3];
 
 void loadImage();
 void saveImage();
@@ -128,7 +128,7 @@ void saveImage()
 
 	// adding bitmap extension
 	strcat(targetName, ".bmp");
-	writeGSBMP(targetName, mainImageMatrix);
+	writeRGBBMP(targetName, mainImageMatrix);
 }
 
 void loadImage()
@@ -140,7 +140,7 @@ void loadImage()
 
 	// adding bitmap extension
 	strcat(imageName, ".bmp");
-	readGSBMP(imageName, mainImageMatrix);
+	readRGBBMP(imageName, mainImageMatrix);
 }
 
 char optionsDisplay()
