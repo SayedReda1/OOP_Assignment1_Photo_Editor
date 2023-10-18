@@ -8,23 +8,21 @@
 // TA:						NA
 // Purpose:					Learning Problem solving and how to manage projects
 
-#include "filters.cpp" // has everything
-#include <functional>
-
-unsigned char imageMatrix[SIZE][SIZE];
-
+#include "filtersRGB.cpp" // has everything
+unsigned char imageMatrix[SIZE][SIZE][3];
 
 int main()
 {
 	// Welcoming
 	std::cout << "User Beeh, Aamel Eeh ^_^\n\n";
-	loadImage(imageMatrix);	// load image bitmap
+	loadImage(imageMatrix); // load image bitmap
 
 	// keep taking input till user inputs '0'
 	char option;
-	do {
-		option = optionsDisplay();						// Displays menu window
-		takeAction(imageMatrix, option);				// takes user input and apply appropriate filter
+	do
+	{
+		option = optionsDisplay();		 // Displays menu window
+		takeAction(imageMatrix, option); // takes user input and apply appropriate filter
 
 	} while (option != '0');
 

@@ -8,7 +8,9 @@
 #define n SIZE
 #define PI 3.14159265
 
-// ________________ Helping functions ________________
+// _________________________________ Helping functions _________________________________
+
+// We assign mat2 to mat1
 void assign(unsigned char mat1[n][n], unsigned char mat2[n][n])
 {
 	for (int i = 0; i < n; ++i)
@@ -20,8 +22,11 @@ void assign(unsigned char mat1[n][n], unsigned char mat2[n][n])
 	}
 }
 
+// _________________________________ Black&White _________________________________
 
-// Black&White _________________________________________
+// Turn grey scale image to black and white image by checking
+// every pixel and turn it to the closer color, whether it's
+// black or white.
 void turnBW(unsigned char imageMatrix[n][n])
 {
 	for (int i = 0; i < n; i++)
@@ -36,8 +41,9 @@ void turnBW(unsigned char imageMatrix[n][n])
 	}
 }
 
+// _________________________________ Inverter _________________________________
 
-// Inverter _____________________________________________
+// Assign each pixel to its compliment.
 void invertFilter(unsigned char imageMatrix[n][n])
 {
 	for (int i = 0; i < n; i++)
@@ -50,7 +56,8 @@ void invertFilter(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Merge Images _____________________________________________
+// _________________________________ Merge Images _____________________________________________
+// Merge two image by taking the averge of every two corresponding pixels.
 void mergeImages(unsigned char imageMatrix[n][n])
 {
 	char otherImageName[100];
@@ -74,7 +81,9 @@ void mergeImages(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Flip _____________________________________________
+// _________________________________ Flip _____________________________________________
+
+// Flip images horizontally by swaping pixels about the y-axis
 void horizontalFlip(unsigned char imageMatrix[n][n])
 {
 	for (int i = 0; i < n; ++i)
@@ -87,6 +96,7 @@ void horizontalFlip(unsigned char imageMatrix[n][n])
 	}
 }
 
+// Flip images vertically by swaping pixels about the x-axis
 void verticalFlip(unsigned char imageMatrix[n][n])
 {
 	for (int col = 0; col < n; ++col)
@@ -99,6 +109,7 @@ void verticalFlip(unsigned char imageMatrix[n][n])
 	}
 }
 
+// Main flip function choose from it horzontal or vertical flip
 void flipFilter(unsigned char imageMatrix[n][n])
 {
 	// Take input
@@ -126,7 +137,10 @@ void flipFilter(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Brightness filter _____________________________________
+// _________________________________ Brightness filter _________________________________
+
+// Change images brightness by increasing or decreasing pixel
+// grey value.
 void brightnessFilter(unsigned char imageMatrix[n][n])
 {
 	char option;
@@ -147,7 +161,9 @@ void brightnessFilter(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Rotate _____________________________________________
+// _________________________________ Rotate _________________________________
+
+// Transpose image matrix and an rotated image by 90 degrees
 void rotateRight(unsigned char imageMatrix[n][n])
 {
 	unsigned char helper[n][n];
@@ -165,6 +181,8 @@ void rotateRight(unsigned char imageMatrix[n][n])
 	assign(imageMatrix, helper);
 }
 
+// Rotate function by 90, 180, 270, 360 degrees to the right
+// using rotateRight().
 void rotateImage(unsigned char imageMatrix[n][n])
 {
 	int degree;
@@ -180,11 +198,18 @@ void rotateImage(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Edges detection _______________________________________
+// _________________________________ Edges detection _________________________________
+
+// Detect edges by turing the image to balck and white first,
+// then compare each pixel with the next pixel horizontally and
+// vertically with the next pixel to find two different
+// consecutive pixels and add the black pixel to the result matrix.
 void detectImageEdges(unsigned char imageMatrix[n][n])
 {
 	turnBW(imageMatrix);
 	unsigned char helper[n][n];
+
+	// Vertical looping
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < n - 1; ++j)
@@ -201,13 +226,14 @@ void detectImageEdges(unsigned char imageMatrix[n][n])
 			{
 				helper[j][i] = 255, helper[j + 1][i] = 0;
 			}
-			else 
+			else
 			{
 				helper[j][i] = 0, helper[j + 1][i] = 255;
 			}
 		}
 	}
 
+	// Horizontal looping
 	for (int i = 0; i < n; ++i)
 		for (int j = 0; j < n - 1; ++j)
 		{
@@ -224,12 +250,13 @@ void detectImageEdges(unsigned char imageMatrix[n][n])
 	assign(imageMatrix, helper);
 }
 
-// Enlarge a quarter _____________________________________
+// _________________________________ Enlarge a quarter _________________________________
+
+// fill the corresponding 2x2 pixels in helper matrix
 void fill(unsigned char matrix[n][n], int x, int y, unsigned char val)
 {
-	// fill the corresponding 2x2 pixels in helper matrix
-	x = (x % (n / 2)) * 2;	// corresponding x in helper
-	y = (y % (n / 2)) * 2;	// corresponding y in helper
+	x = (x % (n / 2)) * 2; // corresponding x in helper
+	y = (y % (n / 2)) * 2; // corresponding y in helper
 
 	for (int i = 0; i < 2; ++i)
 	{
@@ -240,6 +267,8 @@ void fill(unsigned char matrix[n][n], int x, int y, unsigned char val)
 	}
 }
 
+// Choose one of the four image quarters to enlarge it by filling
+// the iamge matrix by that quarter.
 void enlargeQ(unsigned char imageMatrix[n][n])
 {
 	int option;
@@ -252,7 +281,7 @@ void enlargeQ(unsigned char imageMatrix[n][n])
 	auto x = (option / 3) * (n / 2),
 		 y = ((option % 2) ^ 1) * (n / 2);
 
-	// looping over selected quarter and enlarging each pixel 
+	// looping over selected quarter and enlarging each pixel
 	// to a 2x2 pixel in helper using fill
 	for (int i = x; i < x + n / 2; ++i)
 	{
@@ -265,7 +294,9 @@ void enlargeQ(unsigned char imageMatrix[n][n])
 	assign(imageMatrix, helper);
 }
 
-// Shrink Filter ________________________________________
+// _________________________________ Shrink Filter _________________________________
+
+// Returns the average of pixel block starting from start pixel
 int avr(unsigned char imageMatrix[n][n], std::pair<int, int> start, int width)
 {
 	int sum = 0;
@@ -280,6 +311,8 @@ int avr(unsigned char imageMatrix[n][n], std::pair<int, int> start, int width)
 	return sum / (width * width);
 }
 
+// Assign average color of each WxW pixel block to the corresponding
+// pixel in helper matrix.
 void shrinkImage(unsigned char imageMatrix[n][n])
 {
 	char option[5];
@@ -293,7 +326,7 @@ void shrinkImage(unsigned char imageMatrix[n][n])
 	}
 
 	// Take squares of size w in imageMatrix & get average to put in result
-	int w = option[2] - '0'; 	// size of square
+	int w = option[2] - '0'; // size of square
 	unsigned char result[n][n];
 	memset(result, 255, sizeof(result)); // initializing with white color
 
@@ -308,7 +341,9 @@ void shrinkImage(unsigned char imageMatrix[n][n])
 	assign(imageMatrix, result);
 }
 
-// Mirror Filter____________________________________________
+// _________________________________ Mirror Filter _________________________________
+
+// Reflect about x or y axis depending on user input
 void mirrorImage(unsigned char imageMatrix[n][n])
 {
 	// input
@@ -361,19 +396,20 @@ void mirrorImage(unsigned char imageMatrix[n][n])
 	}
 }
 
-// Shuffle Image Quarters ______________________________
+// _________________________________ Shuffle Image Quarters _________________________________
+
+// Convert the points in range [0, 127] to their correspoding points in all quarters
 std::pair<int, int> convertPoint(int i, int j, int quarter)
 {
-	// Convert the points in range [0, 127] to their correspoding points in all quarters
 	int x = (quarter / 3) * (n / 2);
 	int y = ((quarter % 2) ^ 1) * (n / 2);
 	return {i + x, j + y};
 }
 
+// Copies a quarter (from) in original matrix
+// to quarter (to) in result matrix
 void emplace(unsigned char original[n][n], unsigned char result[n][n], int from, int to)
 {
-	// Copies a quarter (from) in original matrix
-	// to quarter (to) in result matrix
 	for (int i = 0; i < n / 2; ++i)
 	{
 		for (int j = 0; j < n / 2; ++j)
@@ -387,6 +423,7 @@ void emplace(unsigned char original[n][n], unsigned char result[n][n], int from,
 	}
 }
 
+// change image quarter to corresponding user input.
 void shuffleImage(unsigned char imageMatrix[n][n])
 {
 	int order[4];
@@ -403,11 +440,12 @@ void shuffleImage(unsigned char imageMatrix[n][n])
 	assign(imageMatrix, helper);
 }
 
-// Blur Image __________________________________________
+// _________________________________ Blur Image _________________________________
+
+// computes each element from all sides multiplied
+// by its corresponding weight in weight matrix
 int avr(unsigned char imageMatrix[n][n], double weight[], int x, int y)
 {
-	// computes each element from all sides multiplied
-	// by its corresponding weight in weight matrix
 
 	// Direction matrix to denote all sides (neighbor pixels)
 	int dirx[] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
@@ -425,6 +463,8 @@ int avr(unsigned char imageMatrix[n][n], double weight[], int x, int y)
 	return finalValue;
 }
 
+// Multiply each neighbor pixel by its corresponding
+// weight and assign their sum to current pixel.
 void blur(unsigned char imageMatrix[n][n])
 {
 	// Our result matrix and weight
@@ -434,18 +474,26 @@ void blur(unsigned char imageMatrix[n][n])
 	// That's to make main color appear a little
 	double weight[9] = {0.0625, 0.125, 0.0625, 0.125, 0.256, 0.125, 0.0625, 0.125, 0.0625};
 
-	for (int i = 0; i < n; ++i)
+	// Apply the filter 3 times to get a greater degree of blur.
+	for (int i = 0; i < 3; ++i)
 	{
-		for (int j = 0; j < n; ++j)
+
+		for (int i = 0; i < n; ++i)
 		{
-			result[i][j] = avr(imageMatrix, weight, i, j);
+			for (int j = 0; j < n; ++j)
+			{
+				result[i][j] = avr(imageMatrix, weight, i, j);
+			}
 		}
 	}
 
 	assign(imageMatrix, result);
 }
 
-// Crop Image _____________________________________________
+// _________________________________ Crop Image _________________________________
+
+// Determine new image borders according to user input specifications
+// and make pixels out of limit white.
 void cropImage(unsigned char imageMatrix[n][n])
 {
 	int x, y, w, h;
@@ -460,15 +508,19 @@ void cropImage(unsigned char imageMatrix[n][n])
 		for (int j = 0; j < n; ++j)
 		{
 			// Turn any pixel out the limits into white
-			if (i < x || i > x + h || j < y || j > y + w) {
+			if (i < x || i > x + h || j < y || j > y + w)
+			{
 				imageMatrix[i][j] = 255;
 			}
-
 		}
 	}
 }
 
-// Skew Horizontal and Vertical __________________________
+// _________________________________ Skew _________________________________
+
+// Skew image horizontally by shifting its pixels to the right by a
+// user-input degree in a new matrix then shrink the image horizontally
+// to fit into the original size.
 void skewHorizontal(unsigned char imageMatrix[n][n])
 {
 	int degree;
@@ -513,6 +565,9 @@ void skewHorizontal(unsigned char imageMatrix[n][n])
 	}
 }
 
+// Skew image vertically by shifting its pixels down by a
+// user-input degree in a new matrix then shrink the image vertically
+// to fit into the original size.
 void skewVertical(unsigned char imageMatrix[n][n])
 {
 	int degree;
@@ -559,8 +614,7 @@ void skewVertical(unsigned char imageMatrix[n][n])
 	}
 }
 
-
-// ________________ Loading & Display Functions________________
+// _________________________________ Loading & Display _________________________________
 void loadImage(unsigned char mainImageMatrix[][SIZE])
 {
 	char imageName[100];
@@ -585,6 +639,7 @@ void saveImage(unsigned char mainImageMatrix[][SIZE])
 	writeGSBMP(targetName, mainImageMatrix);
 }
 
+// Menu display function
 char optionsDisplay()
 {
 	// Prints out the menu display
@@ -614,15 +669,16 @@ char optionsDisplay()
 	return option;
 }
 
+// We put all the functions in an array of fucntion pointers
+// and choose one according to user input.
 void takeAction(unsigned char image[n][n], char option)
 {
 	// arr of pointers to each function
-	std::function<void(unsigned char[n][n])> filters[] {
+	std::function<void(unsigned char[n][n])> filters[]{
 		turnBW, invertFilter, mergeImages, flipFilter,
 		brightnessFilter, rotateImage, detectImageEdges,
 		enlargeQ, shrinkImage, mirrorImage, shuffleImage,
-		blur, cropImage, skewHorizontal, skewVertical
-	};
+		blur, cropImage, skewHorizontal, skewVertical};
 
 	if (option == 's')
 	{
@@ -630,7 +686,7 @@ void takeAction(unsigned char image[n][n], char option)
 	}
 	else if (option == '0')
 	{
-		std::cout << "Exiting ...";
+		std::cout << "BYE BYE :)";
 	}
 	else
 	{
