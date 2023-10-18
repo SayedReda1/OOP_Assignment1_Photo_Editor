@@ -1,5 +1,6 @@
 // Editor Function Declaration
 #include <iostream>
+#include <functional>
 #include <cstring>
 #include <cmath>
 #include "bmplib.cpp"
@@ -7,7 +8,7 @@
 #define n SIZE
 #define PI 3.14159265
 
-// --------- Helping functions -----------
+// ________________ Helping functions ________________
 void assign(unsigned char mat1[n][n], unsigned char mat2[n][n])
 {
 	for (int i = 0; i < n; ++i)
@@ -554,6 +555,92 @@ void skewVertical(unsigned char imageMatrix[n][n])
 		for (int j = 0; j < n; ++j)
 		{
 			imageMatrix[i][j] = helper[(int)k][j];
+		}
+	}
+}
+
+
+// ________________ Loading & Display Functions________________
+void loadImage(unsigned char mainImageMatrix[][SIZE])
+{
+	char imageName[100];
+
+	std::cout << "Please enter image name: ";
+	std::cin >> imageName;
+
+	// adding bitmap extension
+	strcat(imageName, ".bmp");
+	readGSBMP(imageName, mainImageMatrix);
+}
+
+void saveImage(unsigned char mainImageMatrix[][SIZE])
+{
+	char targetName[100];
+
+	std::cout << "> Please enter target name: ";
+	std::cin >> targetName;
+
+	// adding bitmap extension
+	strcat(targetName, ".bmp");
+	writeGSBMP(targetName, mainImageMatrix);
+}
+
+char optionsDisplay()
+{
+	// Prints out the menu display
+
+	std::cout << "Select your filter number [0 to exit]: " << std::endl;
+	std::cout << "  1) Black & White Filter" << std::endl;
+	std::cout << "  2) Invert Filter" << std::endl;
+	std::cout << "  3) Merge Filter" << std::endl;
+	std::cout << "  4) Flip Filter" << std::endl;
+	std::cout << "  5) Darken & Enlighten Filter" << std::endl;
+	std::cout << "  6) Rotate Image" << std::endl;
+	std::cout << "  7) Detect Image Edges" << std::endl;
+	std::cout << "  8) Enlarge Image" << std::endl;
+	std::cout << "  9) Shrink Image" << std::endl;
+	std::cout << "  a) Mirror Half Image" << std::endl;
+	std::cout << "  b) Shuffle Image" << std::endl;
+	std::cout << "  c) Blur Image" << std::endl;
+	std::cout << "  d) Crop Image" << std::endl;
+	std::cout << "  e) Skew Image Right" << std::endl;
+	std::cout << "  f) Skew Image Up" << std::endl;
+	std::cout << "  s) Save Image to file" << std::endl;
+	std::cout << "  0) Exit" << std::endl;
+	std::cout << "Your entry: ";
+	char option;
+	std::cin >> option;
+
+	return option;
+}
+
+void takeAction(unsigned char image[n][n], char option)
+{
+	// arr of pointers to each function
+	std::function<void(unsigned char[n][n])> filters[] {
+		turnBW, invertFilter, mergeImages, flipFilter,
+		brightnessFilter, rotateImage, detectImageEdges,
+		enlargeQ, shrinkImage, mirrorImage, shuffleImage,
+		blur, cropImage, skewHorizontal, skewVertical
+	};
+
+	if (option == 's')
+	{
+		saveImage(image);
+	}
+	else if (option == '0')
+	{
+		std::cout << "Exiting ...";
+	}
+	else
+	{
+		if (::isdigit(option))
+		{
+			filters[option - '0' - 1](image);
+		}
+		else
+		{
+			filters[option - 'a' + 9](image);
 		}
 	}
 }
