@@ -36,24 +36,37 @@ void assignMat(unsigned char mat1[n][n][3], unsigned char mat2[n][n][3])
 
 // get pixel average and assign it to red,
 // green, and blue to get grey pixel.
-void avgBW(unsigned char pixel[3])
+int pixelAvg(unsigned char pixel[3])
 {
 	int sum = 0;
 	for (int i = 0; i < 3; ++i)
 	{
 		sum += pixel[i];
 	}
-	for (int i = 0; i < 3; ++i)
-		pixel[i] = sum / 3;
+
+	return (sum / 3);
 }
 
-// Turn RGB image to grey scale image using avgBW()
 void turnBW(unsigned char imageMatrix[n][n][3])
 {
 	for (int i = 0; i < n; ++i)
 		for (int j = 0; j < n; ++j)
 		{
-			avgBW(imageMatrix[i][j]);
+			unsigned char avg = pixelAvg(imageMatrix[i][j]);
+			if (avg > 127)
+			{
+				// if pixel is brighter than 127, make it white
+				imageMatrix[i][j][0] = 255;
+				imageMatrix[i][j][1] = 255;
+				imageMatrix[i][j][2] = 255;
+			}
+			else
+			{
+				// if pixel is darker than 127, make it black
+				imageMatrix[i][j][0] = 0;
+				imageMatrix[i][j][1] = 0;
+				imageMatrix[i][j][2] = 0;
+			}
 		}
 }
 
